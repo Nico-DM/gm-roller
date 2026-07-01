@@ -1,0 +1,34 @@
+{
+  "id": "fighter",
+  "name": "Brom",
+  "ac": 18,
+  "hp": {
+    "current": 52,
+    "max": 52
+  },
+  "pre_roll_effects": [
+    {
+      "type": "when",
+      "condition": "option:gwf",
+      "effect": {
+        "type": "append_die_ops",
+        "ops": "ro<3",
+        "target_tags": ["weapon"]
+      }
+    }
+  ],
+  "attacks": [
+    {
+      "id": "greatsword",
+      "to_hit": "1d20+8",
+      "components": [
+        {
+          "id": "base",
+          "label": "Greatsword",
+          "expr": "2d6+5",
+          "tags": ["weapon", "melee", "slashing"]
+        }
+      ]
+    }
+  ]
+}

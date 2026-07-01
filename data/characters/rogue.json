@@ -1,0 +1,31 @@
+{
+  "id": "rogue",
+  "name": "Shadow",
+  "ac": 15,
+  "hp": {
+    "current": 28,
+    "max": 28
+  },
+  "attacks": [
+    {
+      "id": "shortsword",
+      "to_hit": "1d20+7",
+      "components": [
+        {
+          "id": "base",
+          "label": "Shortsword",
+          "expr": "1d6+4",
+          "tags": ["weapon", "melee"]
+        },
+        {
+          "id": "sneak",
+          "label": "Sneak Attack",
+          "expr": "3d6",
+          "tags": ["sneak"],
+          "optional": true,
+          "option_id": "sneak_attack"
+        }
+      ]
+    }
+  ]
+}

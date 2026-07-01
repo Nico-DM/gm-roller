@@ -9,6 +9,7 @@ from gm_roller.dice.pipeline import merge_effects, run_post_roll, run_pre_roll
 from gm_roller.dice.results import ComponentRoll, DamageResult
 from gm_roller.dice.spec import parse_expr
 from gm_roller.models.attack import Attack, DamageComponent
+from gm_roller.models.character import Character
 
 
 class DiceEngine:
@@ -109,3 +110,22 @@ class DiceEngine:
 
         total = sum(component.total for component in components)
         return DamageResult(total=total, components=tuple(components))
+
+    def roll_character_attack_damage(
+        self,
+        character: Character,
+        attack_id: str,
+        roll_ctx: AttackRollContext,
+        *,
+        global_pre: list[PreRollEffect] | None = None,
+        global_post: list[PostRollEffect] | None = None,
+    ) -> DamageResult:
+        attack = character.get_attack(attack_id)
+        return self.roll_attack_damage(
+            attack,
+            roll_ctx,
+            global_pre=global_pre,
+            global_post=global_post,
+            character_pre=character.parsed_pre_roll_effects(),
+            character_post=character.parsed_post_roll_effects(),
+        )
