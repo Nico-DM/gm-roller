@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-gm-roller = "gm_roller.gui.app:main"
+gm-roller = "gm_roller.cli:main"
 
 [build-system]
 requires = ["hatchling"]
