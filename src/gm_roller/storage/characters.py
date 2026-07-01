@@ -10,12 +10,16 @@ from gm_roller.storage.errors import CharacterNotFoundError, DuplicateCharacterE
 
 
 def default_characters_dir() -> Path:
-    """Resolve the default data/characters directory relative to the project root."""
+    """Resolve the default characters directory (cwd, package bundle, or project root)."""
     cwd = Path.cwd() / "data" / "characters"
     if cwd.is_dir():
         return cwd
 
     here = Path(__file__).resolve()
+    bundled = here.parent.parent / "data" / "characters"
+    if bundled.is_dir():
+        return bundled
+
     for parent in here.parents:
         candidate = parent / "data" / "characters"
         if candidate.is_dir():

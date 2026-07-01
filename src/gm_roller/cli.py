@@ -179,7 +179,7 @@ def cmd_dice(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="gm-roller", description="D&D 5e combat dice helper")
+    parser = argparse.ArgumentParser(prog="gm-roller", description="Combat dice roller for tabletop game masters")
     parser.add_argument(
         "--data-dir",
         type=Path,

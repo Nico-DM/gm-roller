@@ -51,7 +51,7 @@ class PostRollWhen:
 
 @dataclass(frozen=True)
 class DoubleDice:
-    """Double all dice in the component (standard 5e crit on damage dice)."""
+    """Double all dice in the component (typical crit rule: double dice, not modifiers)."""
 
     target_tags: frozenset[str] | None = None
 

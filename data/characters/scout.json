@@ -1,5 +1,5 @@
 {
-  "id": "rogue",
+  "id": "scout",
   "name": "Shadow",
   "ac": 15,
   "hp": {
@@ -8,22 +8,22 @@
   },
   "attacks": [
     {
-      "id": "shortsword",
+      "id": "blade",
       "to_hit": "1d20+7",
       "components": [
         {
           "id": "base",
-          "label": "Shortsword",
+          "label": "Blade",
           "expr": "1d6+4",
           "tags": ["weapon", "melee"]
         },
         {
-          "id": "sneak",
-          "label": "Sneak Attack",
+          "id": "bonus",
+          "label": "Bonus Strike",
           "expr": "3d6",
-          "tags": ["sneak"],
+          "tags": ["bonus"],
           "optional": true,
-          "option_id": "sneak_attack"
+          "option_id": "bonus_strike"
         }
       ]
     }

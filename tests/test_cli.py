@@ -31,41 +31,41 @@ class TestCli(unittest.TestCase):
     def test_characters_list_includes_samples(self) -> None:
         code, output, _ = self._run("characters", "list")
         self.assertEqual(code, 0)
-        self.assertIn("rogue", output)
-        self.assertIn("fighter", output)
+        self.assertIn("scout", output)
+        self.assertIn("warrior", output)
         self.assertIn("Shadow", output)
         self.assertIn("Brom", output)
 
-    def test_characters_show_rogue(self) -> None:
-        code, output, _ = self._run("characters", "show", "rogue")
+    def test_characters_show_scout(self) -> None:
+        code, output, _ = self._run("characters", "show", "scout")
         self.assertEqual(code, 0)
-        self.assertIn("shortsword", output)
-        self.assertIn("sneak_attack", output)
+        self.assertIn("blade", output)
+        self.assertIn("bonus_strike", output)
 
-    def test_roll_damage_only_with_sneak_attack(self) -> None:
+    def test_roll_damage_only_with_bonus_strike(self) -> None:
         with patch("random.randrange", side_effect=[2, 1, 3, 4, 5]):
             code, output, _ = self._run(
                 "roll",
-                "rogue",
-                "shortsword",
+                "scout",
+                "blade",
                 "--damage-only",
                 "-o",
-                "sneak_attack",
+                "bonus_strike",
             )
         self.assertEqual(code, 0)
-        self.assertIn("Shortsword:", output)
-        self.assertIn("Sneak Attack:", output)
+        self.assertIn("Blade:", output)
+        self.assertIn("Bonus Strike:", output)
         self.assertIn("Total damage:", output)
 
-    def test_roll_fighter_gwf_shows_reroll_expression(self) -> None:
+    def test_roll_warrior_reroll_low_shows_reroll_expression(self) -> None:
         with patch("random.randrange", side_effect=[3, 4]):
             code, output, _ = self._run(
                 "roll",
-                "fighter",
-                "greatsword",
+                "warrior",
+                "two_handed",
                 "--damage-only",
                 "-o",
-                "gwf",
+                "reroll_low",
             )
         self.assertEqual(code, 0)
         self.assertIn("2d6ro<3", output)
@@ -79,19 +79,18 @@ class TestCli(unittest.TestCase):
     def test_unknown_character_exits_nonzero(self) -> None:
         code, _, err = self._run("characters", "show", "missing")
         self.assertNotEqual(code, 0)
-        combined = err
-        self.assertIn("character not found", combined)
+        self.assertIn("character not found", err)
 
     def test_unknown_attack_exits_nonzero(self) -> None:
-        code, _, err = self._run("roll", "rogue", "missing", "--damage-only")
+        code, _, err = self._run("roll", "scout", "missing", "--damage-only")
         self.assertNotEqual(code, 0)
         self.assertIn("attack not found", err)
 
     def test_unknown_option_exits_nonzero(self) -> None:
         code, _, err = self._run(
             "roll",
-            "rogue",
-            "shortsword",
+            "scout",
+            "blade",
             "--damage-only",
             "-o",
             "not_a_real_option",

@@ -1,5 +1,5 @@
 {
-  "id": "fighter",
+  "id": "warrior",
   "name": "Brom",
   "ac": 18,
   "hp": {
@@ -9,7 +9,7 @@
   "pre_roll_effects": [
     {
       "type": "when",
-      "condition": "option:gwf",
+      "condition": "option:reroll_low",
       "effect": {
         "type": "append_die_ops",
         "ops": "ro<3",
@@ -19,12 +19,12 @@
   ],
   "attacks": [
     {
-      "id": "greatsword",
+      "id": "two_handed",
       "to_hit": "1d20+8",
       "components": [
         {
           "id": "base",
-          "label": "Greatsword",
+          "label": "Two-handed blade",
           "expr": "2d6+5",
           "tags": ["weapon", "melee", "slashing"]
         }

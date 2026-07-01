@@ -1,7 +1,7 @@
 [project]
 name = "gm-roller"
-version = "0.1.0"
-description = "D&D 5e combat dice helper for GMs"
+version = "1.0.0"
+description = "Combat dice roller for tabletop game masters"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -18,6 +18,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/gm_roller"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data/characters" = "gm_roller/data/characters"
 
 [dependency-groups]
 dev = [

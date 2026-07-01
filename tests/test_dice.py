@@ -55,13 +55,15 @@ class TestExpressionSpec(unittest.TestCase):
         result = run_pre_roll(spec, _ctx(is_crit=False), effects)
         self.assertEqual(result.compile(), "1d10+5")
 
-    def test_append_die_ops_gwf(self) -> None:
+    def test_append_die_ops_reroll_low(self) -> None:
         spec = parse_expr("2d6+4")
-        effects = [PreRollWhen("option:gwf", AppendDieOps("ro<3", target_tags=frozenset({"weapon"})))]
+        effects = [
+            PreRollWhen("option:reroll_low", AppendDieOps("ro<3", target_tags=frozenset({"weapon"})))
+        ]
         ctx = RollContext(
             is_crit=False,
             is_nat_20=False,
-            enabled_options=frozenset({"gwf"}),
+            enabled_options=frozenset({"reroll_low"}),
             component_id="base",
             component_tags=frozenset({"weapon"}),
             attack_id="test",
@@ -88,7 +90,7 @@ class TestExpressionSpec(unittest.TestCase):
             },
             {
                 "type": "when",
-                "condition": "option:gwf",
+                "condition": "option:reroll_low",
                 "effect": {
                     "type": "append_die_ops",
                     "ops": "ro<3",
@@ -105,12 +107,12 @@ class TestExpressionSpec(unittest.TestCase):
 class TestDiceEngine(unittest.TestCase):
     def test_roll_attack_damage_with_crit_pipeline(self) -> None:
         attack = Attack(
-            id="greatsword",
+            id="two_handed",
             to_hit="1d20+8",
             components=[
                 DamageComponent(
                     id="base",
-                    label="Greatsword",
+                    label="Two-handed blade",
                     expr="2d6+5",
                     tags=["weapon", "melee"],
                 ),
@@ -133,46 +135,46 @@ class TestDiceEngine(unittest.TestCase):
 
     def test_optional_component_requires_enabled_option(self) -> None:
         attack = Attack(
-            id="sneak",
+            id="blade",
             to_hit="1d20+7",
             components=[
                 DamageComponent(
                     id="base",
-                    label="Shortsword",
+                    label="Blade",
                     expr="1d6+4",
                     tags=["weapon"],
                 ),
                 DamageComponent(
-                    id="sneak",
-                    label="Sneak Attack",
+                    id="bonus",
+                    label="Bonus Strike",
                     expr="3d6",
-                    tags=["sneak"],
+                    tags=["bonus"],
                     optional=True,
-                    option_id="sneak_attack",
+                    option_id="bonus_strike",
                 ),
             ],
         )
         engine = DiceEngine()
-        without_sneak = AttackRollContext(
+        without_bonus = AttackRollContext(
             is_crit=False,
             is_nat_20=False,
             enabled_options=frozenset(),
             attack_id=attack.id,
         )
-        with_sneak = AttackRollContext(
+        with_bonus = AttackRollContext(
             is_crit=False,
             is_nat_20=False,
-            enabled_options=frozenset({"sneak_attack"}),
+            enabled_options=frozenset({"bonus_strike"}),
             attack_id=attack.id,
         )
 
         with patch("random.randrange", side_effect=[3, 2, 4, 5, 6]):
-            no_sneak = engine.roll_attack_damage(attack, without_sneak, global_pre=[])
-            sneak = engine.roll_attack_damage(attack, with_sneak, global_pre=[])
+            no_bonus = engine.roll_attack_damage(attack, without_bonus, global_pre=[])
+            bonus = engine.roll_attack_damage(attack, with_bonus, global_pre=[])
 
-        self.assertEqual(len(no_sneak.components), 1)
-        self.assertEqual(len(sneak.components), 2)
-        self.assertGreater(sneak.total, no_sneak.total)
+        self.assertEqual(len(no_bonus.components), 1)
+        self.assertEqual(len(bonus.components), 2)
+        self.assertGreater(bonus.total, no_bonus.total)
 
     def test_post_roll_multiply_total(self) -> None:
         attack = Attack(
