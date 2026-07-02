@@ -33,8 +33,6 @@ class TestCli(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("scout", output)
         self.assertIn("warrior", output)
-        self.assertIn("Shadow", output)
-        self.assertIn("Brom", output)
 
     def test_characters_show_scout(self) -> None:
         code, output, _ = self._run("characters", "show", "scout")

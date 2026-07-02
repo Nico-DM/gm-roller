@@ -5,12 +5,14 @@ description = "Combat dice roller for tabletop game masters"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "customtkinter>=5.2",
     "d20>=1.1.2",
     "pydantic>=2.13.4",
 ]
 
 [project.scripts]
 gm-roller = "gm_roller.cli:main"
+gm-roller-gui = "gm_roller.gui.app:main"
 
 [build-system]
 requires = ["hatchling"]

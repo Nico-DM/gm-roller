@@ -1,5 +1,4 @@
 from gm_roller.dice.context import AttackRollContext, RollContext
-from gm_roller.dice.engine import DiceEngine
 from gm_roller.dice.effects import (
     DEFAULT_PRE_ROLL_EFFECTS,
     AddDice,
@@ -42,3 +41,11 @@ __all__ = [
     "run_post_roll",
     "run_pre_roll",
 ]
+
+
+def __getattr__(name: str):
+    if name == "DiceEngine":
+        from gm_roller.dice.engine import DiceEngine
+
+        return DiceEngine
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -9,12 +9,14 @@ Version **1.0.0**
 - Dice engine powered by [d20](https://github.com/avrae/d20) with support for advantage, rerolls, and composable pre/post-roll effects
 - Character roster stored as one JSON file per character
 - CLI for listing characters and rolling attacks at the table
+- Desktop GUI for rolling attacks with checkboxes and a live result log
 - Effect pipeline per attack: double dice on crit, add bonus dice, change die sizes, multiply totals, and more
 
 ## Requirements
 
 - Python 3.12+
 - [uv](https://docs.astral.sh/uv/) (recommended) or pip
+- Tk support for the GUI (`python3-tk` on Fedora/Debian; CustomTkinter uses Tk under the hood)
 
 ## Install
 
@@ -30,6 +32,16 @@ Install as a command:
 uv sync
 uv run gm-roller --help
 ```
+
+## GUI
+
+Launch the desktop app:
+
+```bash
+uv run gm-roller-gui
+```
+
+Select a character, choose an attack, toggle optional modifiers, and press **Roll Attack**. Results append to the log at the bottom.
 
 ## Quick start
 
@@ -149,7 +161,9 @@ uv run pytest
 data/characters/     Sample character JSON files
 src/gm_roller/
   cli.py               Command-line interface
+  combat/              Shared roll logic for CLI and GUI
   dice/                Dice engine and effect pipeline
+  gui/                 CustomTkinter desktop app
   models/              Pydantic models (Character, Attack, …)
   storage/             JSON character loader
 tests/

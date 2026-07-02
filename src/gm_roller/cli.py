@@ -4,54 +4,16 @@ import argparse
 import sys
 from pathlib import Path
 
-from d20 import CritType
-
-from gm_roller.dice.context import AttackRollContext
+from gm_roller.combat import (
+    RollSettings,
+    collect_attack_options,
+    collect_character_options,
+    format_roll_outcome,
+    roll_character_attack,
+)
 from gm_roller.dice.engine import DiceEngine
-from gm_roller.models.attack import Attack
 from gm_roller.models.character import Character
 from gm_roller.storage import CharacterNotFoundError, CharacterStore
-
-
-def collect_attack_options(attack: Attack) -> list[tuple[str, str]]:
-    options: list[tuple[str, str]] = []
-    for component in attack.components:
-        if component.optional and component.option_id:
-            options.append((component.option_id, component.label))
-    return options
-
-
-def collect_character_options(character: Character) -> set[str]:
-    options: set[str] = set()
-    for effects in (character.pre_roll_effects, character.post_roll_effects):
-        for effect in effects:
-            _collect_options_from_effect(effect, options)
-    return options
-
-
-def _collect_options_from_effect(data: dict, options: set[str]) -> None:
-    condition = data.get("condition")
-    if isinstance(condition, str) and condition.startswith("option:"):
-        options.add(condition.removeprefix("option:"))
-    inner = data.get("effect")
-    if isinstance(inner, dict):
-        _collect_options_from_effect(inner, options)
-
-
-def _known_options(character: Character, attack: Attack) -> set[str]:
-    known = {option_id for option_id, _ in collect_attack_options(attack)}
-    known.update(collect_character_options(character))
-    return known
-
-
-def _validate_options(character: Character, attack: Attack, selected: list[str]) -> None:
-    known = _known_options(character, attack)
-    unknown = [option for option in selected if option not in known]
-    if unknown:
-        known_display = ", ".join(sorted(known)) or "(none)"
-        raise SystemExit(
-            f"unknown option(s): {', '.join(unknown)}. Known options: {known_display}"
-        )
 
 
 def _make_store(data_dir: Path | None) -> CharacterStore:
@@ -124,41 +86,20 @@ def cmd_roll(
         known = ", ".join(a.id for a in character.attacks) or "(none)"
         raise SystemExit(f"attack not found: {attack_id!r}. Known attacks: {known}") from exc
 
-    _validate_options(character, attack, options)
-    enabled = frozenset(options)
-    global_pre = [] if no_default_crit else None
-
-    if damage_only:
-        roll_ctx = AttackRollContext(
-            is_crit=crit,
-            is_nat_20=crit,
-            enabled_options=enabled,
-            attack_id=attack.id,
-        )
-    else:
-        attack_result = engine.roll_attack(
-            attack.to_hit,
+    try:
+        settings = RollSettings(
+            options=frozenset(options),
             advantage=advantage,
             disadvantage=disadvantage,
+            force_crit=crit,
+            damage_only=damage_only,
+            no_default_crit=no_default_crit,
         )
-        print(f"Attack: {attack_result.result}")
-        is_crit = crit or attack_result.crit == CritType.CRIT
-        roll_ctx = AttackRollContext(
-            is_crit=is_crit,
-            is_nat_20=attack_result.crit == CritType.CRIT,
-            enabled_options=enabled,
-            attack_id=attack.id,
-        )
+        outcome = roll_character_attack(character, attack, engine, settings)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
 
-    damage = engine.roll_character_attack_damage(
-        character,
-        attack.id,
-        roll_ctx,
-        global_pre=global_pre,
-    )
-    for component in damage.components:
-        print(f"  {component.label}: {component.detail}")
-    print(f"Total damage: {damage.total}")
+    print(format_roll_outcome(outcome))
     return 0
 
 
