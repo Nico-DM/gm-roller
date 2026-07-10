@@ -1,0 +1,75 @@
+{
+  "id": "cid",
+  "name": "Cid",
+  "ac": 21,
+  "hp": {
+    "current": 147,
+    "max": 147
+  },
+  "pre_roll_effects": [
+    {
+      "type": "when",
+      "condition": "option:feint",
+      "effect": {
+        "type": "add_dice",
+        "dice": [
+          {
+            "count": 1,
+            "sides": 12
+          }
+        ],
+        "target_tags": ["melee"]
+      }
+    }
+  ],
+  "attacks": [
+    {
+      "id": "nine_lives",
+      "to_hit": "1d20+13",
+      "components": [
+        {
+          "id": "base",
+          "label": "Nine Lives Stealer",
+          "expr": "4d12+7",
+          "tags": ["weapon", "melee", "martial", "bladed", "force", "backswing", "heavy", "two-handed"]
+        }
+      ]
+    },
+    {
+      "id": "longsword",
+      "to_hit": "1d20+12",
+      "components": [
+        {
+          "id": "base",
+          "label": "Longsword +2",
+          "expr": "3d10+7",
+          "tags": ["weapon", "melee", "martial", "bladed", "slashing", "two-handed", "variable_p"]
+        }
+      ]
+    },
+    {
+      "id": "main-gauche",
+      "to_hit": "1d20+12",
+      "components": [
+        {
+          "id": "base",
+          "label": "Main-gauche +2",
+          "expr": "3d4+2",
+          "tags": ["weapon", "melee", "martial", "knife", "piercing", "disarm", "finesse", "light", "parry", "variable_s"]
+        }
+      ]
+    },
+    {
+      "id": "bolas",
+      "to_hit": "1d20+10",
+      "components": [
+        {
+          "id": "base",
+          "label": "Bolas",
+          "expr": "1d12+5",
+          "tags": ["weapon", "ranged", "simple", "flailing", "bludgeoning", "finesse", "thrown_30_90", "variable_t"]
+        }
+      ]
+    }
+  ]
+}
