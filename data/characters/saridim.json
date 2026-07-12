@@ -1,0 +1,66 @@
+{
+  "id": "saridim",
+  "name": "Saridim",
+  "ac": 20,
+  "hp": {
+    "current": 180,
+    "max": 180
+  },
+  "pre_roll_effects": [
+    {
+      "type": "when",
+      "condition": "option:tempest",
+      "effect": {
+        "type": "add_dice",
+        "dice": [
+          {
+            "count": 1,
+            "sides": 6
+          }
+        ],
+        "target_tags": ["weapon"]
+      }
+    },
+    {
+      "type": "when",
+      "condition": "option:reroll_low",
+      "effect": {
+        "type": "append_die_ops",
+        "ops": "ro<3"
+      }
+    }
+  ],
+  "post_roll_effects": [
+    {
+      "type": "when",
+      "condition": "option:wrath",
+      "effect": {
+        "type": "add_flat_bonus",
+        "bonus": 5,
+        "target_tags": ["weapon"]
+      }
+    }
+  ],
+  "attacks": [
+    {
+      "id": "wrought-iron",
+      "to_hit": "1d20+18",
+      "components": [
+        {
+          "id": "base",
+          "label": "Wrought-Iron Tower",
+          "expr": "5d8+13",
+          "tags": ["weapon", "melee", "martial", "hammering", "bludgeoning", "shove"]
+        },
+        {
+          "id": "good",
+          "label": "Good Aligned",
+          "expr": "3d6",
+          "tags": ["fire"],
+          "optional": true,
+          "option_id": "good"
+        }
+      ]
+    }
+  ]
+}
